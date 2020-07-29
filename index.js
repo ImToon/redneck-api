@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 require('dotenv').config();
+const PORT = process.env.PORT || 5000;
 const mongoose = require('mongoose');
 
 const authMiddleware = require('./middleware/auth');
@@ -21,4 +22,4 @@ app.use(cors());
 app.use('/api/users', authRoute);
 app.use('/api/quotes', quotesRoute);
 
-app.listen(3000, ()=>console.log("Connected"));
+app.listen(PORT, ()=>console.log("Connected"));

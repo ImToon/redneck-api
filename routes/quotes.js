@@ -3,6 +3,19 @@ const Quote = require('../models/Quote');
 const QuoteRate = require('../models/Quote_rate');
 const {quoteValidation, quoteRateValidation} = require('../validation');
 
+router.get('/', async (req, res)=>{
+    const RES_PER_PAGE = 10;
+    if(!req.user) return;
+    const page = req.query.page;
+    const quotes = await Quote.find({})
+        .skip((RES_PER_PAGE * page) - RES_PER_PAGE)
+        .limit(RES_PER_PAGE)
+        .sort({date: -1})
+        .populate('creator')
+        .exec();
+    res.send(quotes);
+});
+
 router.get('/:id', async (req, res)=>{
     if(!req.user) return;
     const id = req.params.id;

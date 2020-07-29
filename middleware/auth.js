@@ -7,9 +7,9 @@ const PUBLIC_ENDPOINTS = [
 ]
 
 const isTokenCorrect = async (req, res, next)=>{
-    const token = req.header('Authorization');
+    const token = req.headers.authorization;
     if(!token)
-        return res.status(401).send('Token is missing');
+        res.status(401).send('Token is missing');
 
     try {
         const verified = jwt.verify(token, process.env.TOKEN_SECRET);

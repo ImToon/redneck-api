@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const quoteScheame = new mongoose.Schema({
     creator:{
         type: Schema.ObjectId,
-        ref: 'User',
+        ref: 'users',
         required: true,
     },
     content:{
@@ -17,4 +17,4 @@ const quoteScheame = new mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('Quote', quoteScheame);
+module.exports = mongoose.model('quotes', quoteScheame);

@@ -1,4 +1,5 @@
 const joi = require('@hapi/joi');
+const { join } = require('path');
 
 const registerValidation = (data)=>{
     const schema = {
@@ -34,14 +35,19 @@ const loginValidation = (data)=>{
 
 const quoteValidation = (data)=>{
     const schema = {
-        creator: joi.string()
-                    .required(),
         content: joi.string()
                     .required()
     };
     return joi.validate(data, schema);
 };
 
+const quoteRateValidation = (data) => {
+    return joi.validate(data, {
+        mark: joi.number().required()
+    });
+}
+
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.quoteValidation = quoteValidation;
+module.exports.quoteRateValidation = quoteRateValidation;

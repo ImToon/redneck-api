@@ -1,49 +1,55 @@
 const router = require('express').Router();
-const {isTokenCorrect} = require('./verifyToken');
 const Quote = require('../models/Quote');
-const {quoteValidation} = require('../validation');
+const QuoteRate = require('../models/Quote_rate');
+const {quoteValidation, quoteRateValidation} = require('../validation');
 
 router.get('/:id', async (req, res)=>{
-    await isTokenCorrect(req, res);
     if(!req.user) return;
     const id = req.params.id;
-    if(req.user._id === id){
-        Quote.find()
-        .where({creator: id})
-        .populate('creator')
-        .exec()
-        .then(content => res.send(content))
-    }
-    else
-        res.status(403).send('Not allowed');
+    const quote = await Quote.findById(id)
+    .populate('creator')
+    .exec();
+    res.send(quote);
 });
 
-router.post('/:id', async(req, res)=>{
-    await isTokenCorrect(req, res);
-    if(!req.user) return;
-    
-    const id = req.params.id;
-    if(req.user._id === id){
-        const {error} = quoteValidation(req.body);
-        if(error)
-            res.status(400).send(error.details[0]);
-        else{
-            const newQuote = new Quote({
-                creator: req.body.creator,
-                content: req.body.content
-            });
-            try {
-                const savedQuote = await newQuote.save();
-                res.send(savedQuote);
-            } catch (error) {
-                res.status(400).send(error);
-            }
+router.post('/:id/rate', async (req, res)=>{
+    const {error} = quoteRateValidation(req.body);
+    if(error)
+        res.status(400).send(error.details[0]);
+    else{
+        const quoteId = req.params.id;
+        const newQuoteRate = new QuoteRate({
+            quote: quoteId,
+            rater: req.user._id,
+            mark: req.body.mark
+        });
+        try {
+            const savedQuoteRate = await newQuoteRate.save();
+            res.send(savedQuoteRate);
+        } catch (error) {
+            res.status(400).send(error);
         }
     }
+});
 
+router.post('/', async(req, res)=>{
+    if(!req.user) return;
     
-
-    
+    const {error} = quoteValidation(req.body);
+    if(error)
+        res.status(400).send(error.details[0]);
+    else{
+        const newQuote = new Quote({
+            creator: req.user._id,
+            content: req.body.content
+        });
+        try {
+            const savedQuote = await newQuote.save();
+            res.send(savedQuote);
+        } catch (error) {
+            res.status(400).send(error);
+        }
+    }
 })
 
 module.exports = router;

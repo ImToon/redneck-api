@@ -1,12 +1,13 @@
 const express = require('express');
 const app = express();
-const dotenv = require('dotenv');
+const cors = require('cors');
+require('dotenv').config();
 const mongoose = require('mongoose');
+
+const authMiddleware = require('./middleware/auth');
 
 const authRoute = require('./routes/auth');
 const quotesRoute = require('./routes/quotes');
-
-dotenv.config();
 
 mongoose.connect(
     process.env.DB_CONNECT,
@@ -15,8 +16,9 @@ mongoose.connect(
 );
 
 app.use(express.json());
-
-app.use('/api/user', authRoute);
+app.use(authMiddleware);
+app.use(cors());
+app.use('/api/users', authRoute);
 app.use('/api/quotes', quotesRoute);
 
 app.listen(3000, ()=>console.log("Connected"));

@@ -8,6 +8,7 @@ router.get('/', async (req, res)=>{
     const RES_PER_PAGE = 15;
     if(!req.user) return;
     const page = req.query.page;
+    const withComments = req.query.withComments;
     const quotes = await Quote.find({})
         .skip((RES_PER_PAGE * page) - RES_PER_PAGE)
         .limit(RES_PER_PAGE)
@@ -15,12 +16,14 @@ router.get('/', async (req, res)=>{
         .populate('creator')
         .exec();
 
-
     const quotes_with_rate = await Promise.all(
         quotes.map(async (q) =>{
+            let comments;
+            if(withComments)
+                comments = await Comment.find({quote:q._id}).populate('author').sort({date: -1}).exec();
             const altQ = q.toJSON()
             const rates = await QuoteRate.find({quote:q._id});
-            return {...altQ, neg: rates.filter(r => r.mark === -1).length, pos: rates.filter(r => r.mark === 1).length}
+            return {...altQ, neg: rates.filter(r => r.mark === -1).length, pos: rates.filter(r => r.mark === 1).length, comments}
         })
     );
 

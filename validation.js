@@ -43,11 +43,18 @@ const quoteValidation = (data)=>{
 
 const quoteRateValidation = (data) => {
     return joi.validate(data, {
-        mark: joi.number().required()
+        mark: joi.boolean().required()
     });
+}
+
+const commentValidation = (data)=>{
+    return joi.validate(data, {
+        content: joi.string().required()
+    })
 }
 
 module.exports.registerValidation = registerValidation;
 module.exports.loginValidation = loginValidation;
 module.exports.quoteValidation = quoteValidation;
 module.exports.quoteRateValidation = quoteRateValidation;
+module.exports.commentValidation = commentValidation;

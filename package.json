@@ -18,7 +18,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.3.0-beta2",
     "mongoose": "^5.7.5",
-    "nodemailer": "^6.4.10",
+    "nodemailer": "^6.4.16",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.18"
   },
